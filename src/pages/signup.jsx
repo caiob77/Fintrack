@@ -90,9 +90,9 @@ const SignupPage = () => {
                 )} />
                 <FormField control={methods.control} name="terms" render={({ field }) => (
                     <FormItem>
-                        <div className="items-top flex space-x-2">
+                        <div className="items-top flex space-x-2 space-y-2"> 
                             <FormControl>
-                                <Checkbox id="terms" checked={field.value} onCheckedChange={field.onChange} />
+                                <Checkbox className="mt-1" id="terms" checked={field.value} onCheckedChange={field.onChange} />
                             </FormControl>
                             <Label htmlFor="terms">Li e aceito os <Link to="/terms" className="text-primary hover:text-primary/70">termos de uso</Link></Label>
                         </div>
@@ -103,13 +103,13 @@ const SignupPage = () => {
                 <CardFooter>
                     <Button className="w-full">Criar conta</Button>
                 </CardFooter>
-            </Card> 
-            <div className="flex items-center justify-center">
+                <div className="flex items-center justify-center">
                 <p className="text-center opacity-50"> Já tem uma conta? </p>
                 <Button variant="link" asChild className="text-primary hover:text-primary/70">
                 <Link to="/login">Faça login</Link>
                 </Button>
             </div>
+            </Card> 
             </form>
             </Form>
         </div> 
