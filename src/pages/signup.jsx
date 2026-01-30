@@ -37,12 +37,12 @@ const SignupPage = () => {
         <div className="flex flex-col justify-center items-center h-screen w-full">
             <Form {...methods}>
                 <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8">
-            <Card className="w-[500px]">
+            <Card className="w-[600px] p-4">
                 <CardHeader>
                     <CardTitle>Crie sua conta</CardTitle>
                     <CardDescription>Insira seus dados para criar sua conta</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-2">
                 <FormField control={methods.control} name="firstName" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Nome</FormLabel>
@@ -116,4 +116,4 @@ const SignupPage = () => {
     )
 }
 
-export default SignupPage
+export default SignupPage 

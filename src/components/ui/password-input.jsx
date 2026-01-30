@@ -11,7 +11,8 @@ const PasswordInput = forwardRef(({ placeholder, ...props }, ref) => {
             <Input type={passwordVisible ? "text" : "password"} placeholder={placeholder} ref={ref} {...props} />
             <Button variant="ghost" size="icon" 
                     className="absolute right-2 top-1/2 transform -translate-y-1/2"
-                    onClick={() => setPasswordVisible(!passwordVisible)}>
+                    onClick={() => setPasswordVisible(!passwordVisible)}
+                    type="button">
                 {passwordVisible ? <EyeIcon className="text-muted-foreground" /> : <EyeOffIcon className="text-muted-foreground" />}
             </Button>
         </div>
