@@ -49,6 +49,29 @@ const SignupPage = () => {
             terms: false,
         },
     }) 
+    useEffect(() => {
+        const init = async () => {
+            try { 
+                const accessToken = localStorage.getItem('accessToken')
+                const refreshToken = localStorage.getItem('refreshToken')
+                if (!accessToken && !refreshToken) {
+                    const response = await api.get('/users/me', {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    }) 
+                }  
+                if (response.status === 200) {
+                    setUser(response.data)
+                } 
+            } catch (error) {
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                console.error(error)
+            } 
+        }
+        init()
+    }, [user])
     const onSubmit = (data) => {
         signupMutation.mutate(data, {
             onSuccess: (createdUser) => {
