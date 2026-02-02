@@ -7,14 +7,54 @@ import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
+import { useMutation } from '@tanstack/react-query'
+import api from '@/lib/axios'
+import { toast } from 'sonner'
+import { useState, useEffect } from 'react'
+import { Navigate } from 'react-router-dom'
 
 
 const LoginPage = () => {
+    const [user, setUser] = useState(null)
 
     const loginSchema = z.object({
         email: z.string().trim({ message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
         password: z.string().trim().min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
     })
+
+    const loginMutation = useMutation({
+        mutationKey: ['login'],
+        mutationFn: async (variables) => {
+            const response = await api.post('/users/login', {
+                email: variables.email,
+                password: variables.password,
+            })
+            return response.data
+        },
+    })
+    useEffect(() => {
+        const init = async () => {
+            try {
+                const accessToken = localStorage.getItem('accessToken')
+                const refreshToken = localStorage.getItem('refreshToken')
+                if (!accessToken && !refreshToken) {
+                    const response = await api.get('/users/me', {
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`
+                        }
+                    })
+                }
+                if (response.status === 200) {
+                    setUser(response.data)
+                }
+            } catch (error) {
+                localStorage.removeItem('accessToken')
+                localStorage.removeItem('refreshToken')
+                console.error(error)
+            }
+        }
+        init()
+    }, [user])
     const methods = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -23,7 +63,22 @@ const LoginPage = () => {
         },
     })
     const onSubmit = (data) => {
-        console.log(data)
+        loginMutation.mutate(data, {
+            onSuccess: (loggedUser) => {
+                const accessToken = loggedUser.accessToken
+                const refreshToken = loggedUser.refreshToken
+                setUser(loggedUser)
+                localStorage.setItem('accessToken', accessToken)
+                localStorage.setItem('refreshToken', refreshToken)
+                toast.success('Login realizado com sucesso')
+            },
+            onError: () => {
+                toast.error('Erro ao fazer login')
+            },
+        })
+    } 
+    if (user) {
+        return <Navigate to="/home" />
     }
     return (
         <div className="flex flex-col justify-center items-center h-screen w-full">
