@@ -6,9 +6,13 @@ import HomePage from './pages/home.jsx'
 import LoginPage from './pages/login.jsx'
 import SignupPage from './pages/signup.jsx'
 import NotFoundPage from './pages/not-found.jsx'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
+      <QueryClientProvider client={queryClient}>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
@@ -17,5 +21,6 @@ createRoot(document.getElementById('root')).render(
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
+    </QueryClientProvider>
   </StrictMode>,
 )
