@@ -9,6 +9,9 @@ import { Label } from '@/components/ui/label'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation } from '@tanstack/react-query'
+import api from '@/lib/axios'
+import { toast } from 'sonner'
 
 const signupSchema = z.object({
     firstName: z.string().trim().min(1, { message: 'Nome é obrigatório' }),
@@ -18,7 +21,22 @@ const signupSchema = z.object({
     confirmPassword: z.string().trim().min(8, { message: 'confirmação de senha é obrigatória' }),
     terms: z.boolean().refine((data) => data, { message: 'Você deve aceitar os termos de uso' }),
 })
+
+
 const SignupPage = () => {
+    const [user, setUser] = useState(null)
+    const signupMutation = useMutation({
+        mutationKey: ['signup'],
+        mutationFn: async (variables) => {
+            const response = await api.post('/users', {
+            firstName: variables.firstName,
+            lastName: variables.lastName,
+            email: variables.email,
+            password: variables.password,
+        })
+        return response.data
+        },
+    })
     const methods = useForm({
         resolver: zodResolver(signupSchema),
         defaultValues: {
@@ -31,7 +49,22 @@ const SignupPage = () => {
         },
     }) 
     const onSubmit = (data) => {
-        console.log(data)
+        signupMutation.mutate(data, {
+            onSuccess: (createdUser) => {
+                const accessToken = createdUser.accessToken
+                const refreshToken = createdUser.refreshToken
+                setUser(createdUser)
+                localStorage.setItem('accessToken', accessToken)
+                localStorage.setItem('refreshToken', refreshToken) 
+                toast.success('Conta criada com sucesso')
+            },
+            onError: () => {
+                toast.error('Erro ao criar conta')
+            },
+        })
+    }
+    if (user) {
+        return <Navigate to="/home" />
     }
     return (
         <div className="flex flex-col justify-center items-center h-screen w-full">
