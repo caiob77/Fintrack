@@ -28,7 +28,7 @@ const signupSchema = z.object({
 
 
 const SignupPage = () => {
-    const { user, signup } = useAuthContext()
+    const { user, signup, isInitializing } = useAuthContext()
 
     const methods = useForm({
         resolver: zodResolver(signupSchema),
@@ -44,6 +44,9 @@ const SignupPage = () => {
     
     const onSubmit = (data) => {
         signup(data)
+    }
+    if (isInitializing) {
+        return <div>Carregando...</div>
     }
     if (user) {
         return <Navigate to="/home" />

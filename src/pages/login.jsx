@@ -13,36 +13,11 @@ import { Navigate } from 'react-router-dom'
 import { useAuthContext } from '@/contexts/auth'
 
 const LoginPage = () => {
-    const [user, setUser] = useState(null)
-    const { login } = useAuthContext()
+    const { user, login, isInitializing } = useAuthContext()
     const loginSchema = z.object({
         email: z.string().trim({ message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
         password: z.string().trim().min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
-    })  
-
-    useEffect(() => {
-        const init = async () => {
-            try {
-                const accessToken = localStorage.getItem('accessToken')
-                const refreshToken = localStorage.getItem('refreshToken')
-                if (accessToken && refreshToken) {
-                    const response = await api.get('/users/me', {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    })
-                    if (response.status === 200) {
-                        setUser(response.data)
-                    }
-                }
-            } catch (error) {
-                localStorage.removeItem('accessToken')
-                localStorage.removeItem('refreshToken')
-                console.error(error)
-            }
-        }
-        init()
-    }, [user])
+    }) 
     const methods = useForm({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -51,6 +26,10 @@ const LoginPage = () => {
         },
     })
     const onSubmit = (data) => { login(data) }
+    
+    if (isInitializing) {
+        return <div>Carregando...</div>
+    }
     if (user) {
         return <Navigate to="/home" />
     }
