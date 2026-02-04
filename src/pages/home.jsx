@@ -1,7 +1,7 @@
 import { useAuthContext } from '@/contexts/auth'
 
 const HomePage = () => {
-    const { isInitializing, user } = useAuthContext()
+    const { isInitializing, user, logout } = useAuthContext()
     
     if (isInitializing) {
         return <div>Carregando...</div>
@@ -12,6 +12,7 @@ const HomePage = () => {
     return (
         <div>
             <h1>Home Page</h1>
+            <Button onClick={() => logout()}>Sair</Button>
         </div>
     )
 }

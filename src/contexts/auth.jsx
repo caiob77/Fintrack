@@ -8,6 +8,7 @@ export const AuthContext = createContext({
     login: () => {},
     signup: () => {},
     isInitializing: true,
+    logout: () => {},
 })
 
 export const useAuthContext = () => {
@@ -116,10 +117,15 @@ export const AuthContextProvider = ({ children }) => {
             },
         })
     }
-
+    const logout = () => {
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        setUser(null)
+        toast.success('Logout realizado com sucesso')
+    }
    return (
     <AuthContext.Provider 
-    value={{ user, login, signup, isInitializing }}>
+    value={{ user, login, signup, isInitializing, logout }}>
         {children}
     </AuthContext.Provider>
    )
