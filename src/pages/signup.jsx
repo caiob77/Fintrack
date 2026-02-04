@@ -21,8 +21,10 @@ const signupSchema = z.object({
     email: z.string().trim({ message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
     password: z.string().trim().min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
     confirmPassword: z.string().trim().min(8, { message: 'confirmação de senha é obrigatória' }),
-    terms: z.boolean().refine((data) => data.terms, { message: 'Você deve aceitar os termos de uso' })
-    .refine((data) => data.password === data.confirmPassword, { message: 'As senhas não correspondem', path: ['confirmPassword'] })
+    terms: z.boolean().refine((data) => data === true, { message: 'Você deve aceitar os termos de uso' })
+}).refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não correspondem',
+    path: ['confirmPassword'],
 })
 
 

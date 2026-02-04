@@ -15,12 +15,12 @@ export const AuthContextProvider = ({ children }) => {
         mutationKey: ['signup'],
         mutationFn: async (variables) => {
             const response = await api.post('/users', {
-            firstName: variables.firstName,
-            lastName: variables.lastName,
-            email: variables.email,
-            password: variables.password,
-        })
-        return response.data
+                first_name: variables.firstName,
+                last_name: variables.lastName,
+                email: variables.email,
+                password: variables.password,
+            })
+            return response.data
         },
     })
     useEffect(() => {
@@ -55,23 +55,54 @@ export const AuthContextProvider = ({ children }) => {
         return response.data
         },
     })
-    const signup = (data) => { signupMutation.mutate(data, {
-        onSuccess: (createdUser) => {
-            const accessToken = createdUser.accessToken
-            const refreshToken = createdUser.refreshToken
-            setUser(createdUser)
-            localStorage.setItem('accessToken', accessToken)
-            localStorage.setItem('refreshToken', refreshToken) 
-            toast.success('Conta criada com sucesso')
-        },
-        onError: () => {
-            toast.error('Erro ao criar conta')
-        },
-    })
-}
+    const signup = (data) => {
+        signupMutation.mutate(data, {
+            onSuccess: (createdUser) => {
+                const accessToken = createdUser.accessToken
+                const refreshToken = createdUser.refreshToken
+                setUser(createdUser)
+                localStorage.setItem('accessToken', accessToken)
+                localStorage.setItem('refreshToken', refreshToken) 
+                toast.success('Conta criada com sucesso')
+            },
+            onError: (error) => {
+                if (error.code === 'ERR_NETWORK' || error.code === 'ERR_CONNECTION_REFUSED') {
+                    toast.error('Servidor não está disponível. Verifique se o backend está rodando.')
+                } else if (error.response) {
+                    // Erro do servidor (4xx, 5xx)
+                    const message = error.response.data?.message || error.response.data?.error || 'Erro ao criar conta'
+                    toast.error(message)
+                    console.error('Erro do servidor:', error.response.data)
+                } else {
+                    toast.error('Erro ao criar conta')
+                    console.error('Erro:', error)
+                }
+            },
+        })
+    }
+    const login = (data) => {
+        loginMutation.mutate(data, {
+            onSuccess: (loggedUser) => {
+                const accessToken = loggedUser.accessToken
+                const refreshToken = loggedUser.refreshToken
+                setUser(loggedUser)
+                localStorage.setItem('accessToken', accessToken)
+                localStorage.setItem('refreshToken', refreshToken)
+                toast.success('Login realizado com sucesso')
+            },
+            onError: (error) => {
+                if (error.code === 'ERR_NETWORK' || error.code === 'ERR_CONNECTION_REFUSED') {
+                    toast.error('Servidor não está disponível. Verifique se o backend está rodando.')
+                } else {
+                    toast.error('Erro ao fazer login')
+                }
+            },
+        })
+    }
+
    return (
     <AuthContext.Provider 
-    value={{ user, login: () => {}, signup: () => {} }}>
+    value={{ user, login, signup }}>
         {children}
     </AuthContext.Provider>
    )

@@ -37,15 +37,15 @@ const LoginPage = () => {
             try {
                 const accessToken = localStorage.getItem('accessToken')
                 const refreshToken = localStorage.getItem('refreshToken')
-                if (!accessToken && !refreshToken) {
+                if (accessToken && refreshToken) {
                     const response = await api.get('/users/me', {
                         headers: {
                             Authorization: `Bearer ${accessToken}`
                         }
                     })
-                }
-                if (response.status === 200) {
-                    setUser(response.data)
+                    if (response.status === 200) {
+                        setUser(response.data)
+                    }
                 }
             } catch (error) {
                 localStorage.removeItem('accessToken')
