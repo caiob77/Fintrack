@@ -2,6 +2,9 @@ import { createContext, useState, useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import api from '@/lib/axios'
 import { toast } from 'sonner'
+import { setTokens, getTokens } from '@/constants/local-storage'
+import { LOCAL_ACCESS_TOKEN_KEY, LOCAL_REFRESH_TOKEN_KEY } from '@/constants/local-storage'
+
 
 export const AuthContext = createContext({
     user: null,
@@ -13,18 +16,6 @@ export const AuthContext = createContext({
 
 export const useAuthContext = () => {
     return useContext(AuthContext)
-} 
-
-const setTokens = (accessToken, refreshToken) => {
-    localStorage.setItem('accessToken', accessToken)
-    localStorage.setItem('refreshToken', refreshToken)
-}
-
-const getTokens = () => {
-    return {
-        accessToken: localStorage.getItem('accessToken'),
-        refreshToken: localStorage.getItem('refreshToken'),
-    }
 } 
 
 export const AuthContextProvider = ({ children }) => {
@@ -49,18 +40,14 @@ export const AuthContextProvider = ({ children }) => {
                 const { accessToken, refreshToken } = getTokens()
                 if (!accessToken && !refreshToken) return;
                 try {
-                    const response = await api.get('/users/me', {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`
-                        }
-                    }) 
+                    const response = await api.get('/users/me') 
                     if (response.status === 200) {
                         setUser(response.data)
                     }
                 } catch (error) {
                     setUser(null)
-                    localStorage.removeItem('accessToken')
-                    localStorage.removeItem('refreshToken')
+                    localStorage.removeItem(LOCAL_ACCESS_TOKEN_KEY)
+                    localStorage.removeItem(LOCAL_REFRESH_TOKEN_KEY)
                     console.error(error)
                 }finally {
                     setIsInitializing(false)
@@ -118,8 +105,8 @@ export const AuthContextProvider = ({ children }) => {
         })
     }
     const logout = () => {
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
+        localStorage.removeItem(LOCAL_ACCESS_TOKEN_KEY)
+        localStorage.removeItem(LOCAL_REFRESH_TOKEN_KEY)
         setUser(null)
         toast.success('Logout realizado com sucesso')
     }
