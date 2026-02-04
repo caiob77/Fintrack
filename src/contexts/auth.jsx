@@ -9,8 +9,25 @@ export const AuthContext = createContext({
     signup: () => {},
 })
 
+export const useAuthContext = () => {
+    return useContext(AuthContext)
+} 
+
+const setTokens = (accessToken, refreshToken) => {
+    localStorage.setItem('accessToken', accessToken)
+    localStorage.setItem('refreshToken', refreshToken)
+}
+
+const getTokens = () => {
+    return {
+        accessToken: localStorage.getItem('accessToken'),
+        refreshToken: localStorage.getItem('refreshToken'),
+    }
+} 
+
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
+    
     const signupMutation = useMutation({
         mutationKey: ['signup'],
         mutationFn: async (variables) => {
@@ -22,11 +39,10 @@ export const AuthContextProvider = ({ children }) => {
             })
             return response.data
         },
-    })
+    })  
     useEffect(() => {
         const init = async () => {
-                const accessToken = localStorage.getItem('accessToken')
-                const refreshToken = localStorage.getItem('refreshToken')
+                const { accessToken, refreshToken } = getTokens()
                 if (!accessToken && !refreshToken) return;
                 try {
                     const response = await api.get('/users/me', {
@@ -45,6 +61,7 @@ export const AuthContextProvider = ({ children }) => {
         }
         init()
     }, [user]) 
+
     const loginMutation = useMutation({
         mutationKey: ['login'],
         mutationFn: async (variables) => {
@@ -58,11 +75,8 @@ export const AuthContextProvider = ({ children }) => {
     const signup = (data) => {
         signupMutation.mutate(data, {
             onSuccess: (createdUser) => {
-                const accessToken = createdUser.accessToken
-                const refreshToken = createdUser.refreshToken
+                setTokens(createdUser.accessToken, createdUser.refreshToken)
                 setUser(createdUser)
-                localStorage.setItem('accessToken', accessToken)
-                localStorage.setItem('refreshToken', refreshToken) 
                 toast.success('Conta criada com sucesso')
             },
             onError: (error) => {
@@ -83,11 +97,8 @@ export const AuthContextProvider = ({ children }) => {
     const login = (data) => {
         loginMutation.mutate(data, {
             onSuccess: (loggedUser) => {
-                const accessToken = loggedUser.accessToken
-                const refreshToken = loggedUser.refreshToken
+                setTokens(loggedUser.accessToken, loggedUser.refreshToken)
                 setUser(loggedUser)
-                localStorage.setItem('accessToken', accessToken)
-                localStorage.setItem('refreshToken', refreshToken)
                 toast.success('Login realizado com sucesso')
             },
             onError: (error) => {

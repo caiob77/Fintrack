@@ -9,9 +9,8 @@ import { Label } from '@/components/ui/label'
 import { z } from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AuthContext } from '@/contexts/auth'
-import { useContext } from 'react'
 import { Navigate } from 'react-router-dom' 
+import { useAuthContext } from '@/contexts/auth'
 
 
 
@@ -29,7 +28,7 @@ const signupSchema = z.object({
 
 
 const SignupPage = () => {
-    const { user, signup } = useContext(AuthContext)
+    const { user, signup } = useAuthContext()
 
     const methods = useForm({
         resolver: zodResolver(signupSchema),

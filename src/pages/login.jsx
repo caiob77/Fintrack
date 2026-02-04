@@ -10,13 +10,11 @@ import { Link } from 'react-router-dom'
 import api from '@/lib/axios'
 import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
-import { AuthContext } from '@/contexts/auth'
-import { useContext } from 'react'
-
+import { useAuthContext } from '@/contexts/auth'
 
 const LoginPage = () => {
     const [user, setUser] = useState(null)
-    const { login } = useContext(AuthContext)
+    const { login } = useAuthContext()
     const loginSchema = z.object({
         email: z.string().trim({ message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
         password: z.string().trim().min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
