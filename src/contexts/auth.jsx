@@ -1,9 +1,9 @@
 import { createContext, useState, useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import api from '@/lib/axios'
 import { toast } from 'sonner'
 import { setTokens, getTokens } from '@/constants/local-storage'
 import { LOCAL_ACCESS_TOKEN_KEY, LOCAL_REFRESH_TOKEN_KEY } from '@/constants/local-storage'
+import { UserService } from '@/services/user' 
 
 
 export const AuthContext = createContext({
@@ -25,13 +25,8 @@ export const AuthContextProvider = ({ children }) => {
     const signupMutation = useMutation({
         mutationKey: ['signup'],
         mutationFn: async (variables) => {
-            const response = await api.post('/users', {
-                first_name: variables.firstName,
-                last_name: variables.lastName,
-                email: variables.email,
-                password: variables.password,
-            })
-            return response.data
+            const response = await UserService.signup(variables)
+            return response
         },
     })  
     useEffect(() => {
@@ -40,9 +35,9 @@ export const AuthContextProvider = ({ children }) => {
                 const { accessToken, refreshToken } = getTokens()
                 if (!accessToken && !refreshToken) return;
                 try {
-                    const response = await api.get('/users/me') 
-                    if (response.status === 200) {
-                        setUser(response.data)
+                    const response = await UserService.getMe() 
+                    if (response    ) {
+                        setUser(response)
                     }
                 } catch (error) {
                     setUser(null)
@@ -59,11 +54,8 @@ export const AuthContextProvider = ({ children }) => {
     const loginMutation = useMutation({
         mutationKey: ['login'],
         mutationFn: async (variables) => {
-            const response = await api.post('/users/login', {
-            email: variables.email,
-            password: variables.password,
-        })
-        return response.data
+            const response = await UserService.login(variables)
+            return response
         },
     })
     const signup = (data) => {
