@@ -22,3 +22,26 @@ api.interceptors.request.use((request) => {
     }
     return request
 }) 
+
+api.interceptors.response.use((response) => response, async (error) => { 
+    const refreshToken = getTokens().refreshToken
+    if (!refreshToken) {
+        return Promise.reject(error) 
+    }
+    if (error.response.status === 401 && !error.config._retry && !error.config.url.includes('/users/refresh-token')) {
+        error.config._retry = true
+       try {
+         const response = await api.post('/users/refresh-token', {
+            refreshToken,
+        })
+        const newAccessToken = response.data.accessToken
+        const newRefreshToken = response.data.refreshToken
+        setTokens(newAccessToken, newRefreshToken)
+        error.config.headers.Authorization = `Bearer ${newAccessToken}`  
+        return api(error.config)
+       } catch (error) {
+        return Promise.reject(error)
+       }
+    }
+    return Promise.reject(error) 
+})
