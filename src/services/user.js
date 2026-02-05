@@ -1,6 +1,18 @@
 import api from '@/lib/axios'
 
 export const UserService = {
+
+    /**
+     * Cria um novo usuário
+     * @param {Object} variables - Variáveis para criação do usuário
+     * @param {string} variables.firstName - Nome do usuário
+     * @param {string} variables.lastName - Sobrenome do usuário
+     * @param {string} variables.email - Email do usuário
+     * @param {string} variables.password - Senha do usuário
+     * @returns {Promise<Object>} Resposta da API
+     * @returns {string} accessToken - Token de acesso
+     * @returns {string} refreshToken - Token de atualização
+     */
       signup: async (variables) => {
         const response = await api.post('/users', {
             first_name: variables.firstName,
@@ -11,6 +23,15 @@ export const UserService = {
         return response.data 
 
     },
+    /**
+     * Faz login de um usuário
+     * @param {Object} variables - Variáveis para login do usuário
+     * @param {string} variables.email - Email do usuário
+     * @param {string} variables.password - Senha do usuário
+     * @returns {Promise<Object>} Resposta da API
+     * @returns {string} accessToken - Token de acesso
+     * @returns {string} refreshToken - Token de atualização
+     */
     login: async (variables) => {
         const response = await api.post('/users/login', {
             email: variables.email,
@@ -18,6 +39,13 @@ export const UserService = {
         })
         return response.data
     },
+    /**
+     * Obtém os dados do usuário logado
+     * @returns {Promise<Object>} Resposta da API
+     * @returns {string} firstName - Nome do usuário
+     * @returns {string} lastName - Sobrenome do usuário
+     * @returns {string} email - Email do usuário
+     */
     getMe: async () => {
         const response = await api.get('/users/me')
         return response.data
