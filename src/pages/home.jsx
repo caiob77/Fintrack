@@ -1,4 +1,5 @@
 import { useAuthContext } from '@/contexts/auth'
+import Header from '@/components/header'
 
 const HomePage = () => {
     const { isInitializing, user, logout } = useAuthContext()
@@ -11,8 +12,13 @@ const HomePage = () => {
     }
     return (
         <div>
-            <h1>Home Page</h1>
-            <Button onClick={() => logout()}>Sair</Button>
+            <Header />
+            <div className="flex justify-center items-center h-screen w-full">  
+                <h2> dashboard</h2>
+                <div>
+
+                </div>
+            </div>
         </div>
     )
 }
