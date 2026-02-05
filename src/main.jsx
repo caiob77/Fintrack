@@ -9,6 +9,7 @@ import NotFoundPage from './pages/not-found.jsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { AuthContextProvider } from './contexts/auth.jsx'
+import { AvatarContextProvider } from './contexts/avatar.jsx'
 
 const queryClient = new QueryClient()
 
@@ -16,16 +17,18 @@ createRoot(document.getElementById('root')).render(
   <StrictMode>
       <QueryClientProvider client={queryClient}>
          <AuthContextProvider>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/signup" element={<SignupPage />} />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </BrowserRouter>
-    <Toaster />
-    </AuthContextProvider>
-    </QueryClientProvider>
+            <AvatarContextProvider>
+               <BrowserRouter>
+                  <Routes>
+                     <Route path="/" element={<HomePage />} />
+                     <Route path="/login" element={<LoginPage />} />
+                     <Route path="/signup" element={<SignupPage />} />
+                     <Route path="*" element={<NotFoundPage />} />
+                  </Routes>
+               </BrowserRouter>
+               <Toaster />
+            </AvatarContextProvider>
+         </AuthContextProvider>
+      </QueryClientProvider>
   </StrictMode>,
 )
