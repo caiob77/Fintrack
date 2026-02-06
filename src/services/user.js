@@ -50,4 +50,19 @@ export const UserService = {
         const response = await api.get('/users/me')
         return response.data
     },
+    /**
+     * Obtém o saldo do usuário
+     * @param {Object} variables - Variáveis para obtenção do saldo
+     * @param {string} variables.from - Data de início
+     * @param {string} variables.to - Data de fim
+     * @returns {Promise<Object>} Resposta da API
+     * @returns {number} balance - Saldo do usuário
+     */
+    getBalance: async (variables) => {
+        const queryParams = new URLSearchParams()
+        queryParams.set('from', variables.from)
+        queryParams.set('to', variables.to)
+        const response = await api.get(`/users/me/balance?${queryParams.toString()}`)
+        return response.data
+    },
 }
