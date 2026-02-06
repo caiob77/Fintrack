@@ -28,7 +28,7 @@ const getInitialDateState = (searchParams) => {
     return defaultDate
   }
   // Neste ponto, ambas as datas são válidas
-  return {
+  return { 
     from: new Date(from + 'T00:00:00'),
     to: new Date(to + 'T00:00:00'),
   }
