@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Toaster } from 'sonner'
 import { AuthContextProvider } from './contexts/auth.jsx'
 import { AvatarContextProvider } from './contexts/avatar.jsx'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 
 const queryClient = new QueryClient()
 
@@ -29,6 +30,7 @@ createRoot(document.getElementById('root')).render(
                <Toaster />
             </AvatarContextProvider>
          </AuthContextProvider>
+         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
   </StrictMode>,
 )
