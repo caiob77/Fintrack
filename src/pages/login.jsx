@@ -3,28 +3,13 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import PasswordInput from '@/components/password-input'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Link } from 'react-router-dom'
-import api from '@/lib/axios'
-import { useState, useEffect } from 'react'
 import { Navigate } from 'react-router-dom'
 import { useAuthContext } from '@/contexts/auth'
-
+import { useLoginForm } from '@/forms/hooks/user'
 const LoginPage = () => {
     const { user, login, isInitializing } = useAuthContext()
-    const loginSchema = z.object({
-        email: z.string().trim({ message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
-        password: z.string().trim().min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
-    }) 
-    const methods = useForm({
-        resolver: zodResolver(loginSchema),
-        defaultValues: {
-            email: '',
-            password: '',
-        },
-    })
+    const { form: methods } = useLoginForm() 
     const onSubmit = (data) => { login(data) }
     
     if (isInitializing) {

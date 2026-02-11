@@ -6,41 +6,14 @@ import { Button } from '@/components/ui/button'
 import PasswordInput from '@/components/password-input'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
-import { z } from 'zod'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
 import { Navigate } from 'react-router-dom' 
 import { useAuthContext } from '@/contexts/auth'
-
-
-
-const signupSchema = z.object({
-    firstName: z.string().trim().min(1, { message: 'Nome é obrigatório' }),
-    lastName: z.string().trim().min(1, { message: 'Sobrenome é obrigatório' }),
-    email: z.string().trim({ message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
-    password: z.string().trim().min(8, { message: 'Senha deve ter pelo menos 8 caracteres' }),
-    confirmPassword: z.string().trim().min(8, { message: 'confirmação de senha é obrigatória' }),
-    terms: z.boolean().refine((data) => data === true, { message: 'Você deve aceitar os termos de uso' })
-}).refine((data) => data.password === data.confirmPassword, {
-    message: 'As senhas não correspondem',
-    path: ['confirmPassword'],
-})
-
+import { useSignupForm } from '@/forms/hooks/user'
 
 const SignupPage = () => {
     const { user, signup, isInitializing } = useAuthContext()
 
-    const methods = useForm({
-        resolver: zodResolver(signupSchema),
-        defaultValues: {
-            firstName: '',
-            lastName: '',
-            email: '',
-            password: '',
-            confirmPassword: '',
-            terms: false,
-        },
-    })  
+    const { form: methods } = useSignupForm() 
     
     const onSubmit = (data) => {
         signup(data)
