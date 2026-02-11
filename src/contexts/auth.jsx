@@ -1,9 +1,9 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'sonner'
-import { setTokens, getTokens } from '@/constants/local-storage'
-import { LOCAL_ACCESS_TOKEN_KEY, LOCAL_REFRESH_TOKEN_KEY } from '@/constants/local-storage'
-import { UserService } from '@/services/user' 
+import { setTokens, getTokens, removeTokens } from '@/constants/local-storage'
+import { UserService } from '@/api/services/user' 
+import { signupMutationKey, loginMutationKey } from '@/api/hooks/user'
 
 
 export const AuthContext = createContext({
@@ -23,12 +23,19 @@ export const AuthContextProvider = ({ children }) => {
     const [isInitializing, setIsInitializing] = useState(true)
     
     const signupMutation = useMutation({
-        mutationKey: ['signup'],
+        mutationKey: signupMutationKey,
         mutationFn: async (variables) => {
             const response = await UserService.signup(variables)
             return response
         },
-    })  
+    })
+    const loginMutation = useMutation({
+        mutationKey: loginMutationKey,
+        mutationFn: async (variables) => {
+            const response = await UserService.login(variables)
+            return response
+        },
+    })
     useEffect(() => {
         const init = async () => {
             setIsInitializing(true)
@@ -41,8 +48,7 @@ export const AuthContextProvider = ({ children }) => {
                     }
                 } catch (error) {
                     setUser(null)
-                    localStorage.removeItem(LOCAL_ACCESS_TOKEN_KEY)
-                    localStorage.removeItem(LOCAL_REFRESH_TOKEN_KEY)
+                    removeTokens()
                     console.error(error)
                 }finally {
                     setIsInitializing(false)
@@ -51,57 +57,40 @@ export const AuthContextProvider = ({ children }) => {
         init()
     }, [user]) 
 
-    const loginMutation = useMutation({
-        mutationKey: ['login'],
-        mutationFn: async (variables) => {
-            const response = await UserService.login(variables)
-            return response
-        },
-    })
-    const signup = (data) => {
-        signupMutation.mutate(data, {
-            onSuccess: (createdUser) => {
-                setTokens(createdUser.accessToken, createdUser.refreshToken)
-                setUser(createdUser)
-                toast.success('Conta criada com sucesso')
-            },
-            onError: (error) => {
-                if (error.code === 'ERR_NETWORK' || error.code === 'ERR_CONNECTION_REFUSED') {
-                    toast.error('Servidor não está disponível. Verifique se o backend está rodando.')
-                } else if (error.response) {
-                    // Erro do servidor (4xx, 5xx)
-                    const message = error.response.data?.message || error.response.data?.error || 'Erro ao criar conta'
-                    toast.error(message)
-                    console.error('Erro do servidor:', error.response.data)
-                } else {
-                    toast.error('Erro ao criar conta')
-                    console.error('Erro:', error)
-                }
-            },
-        })
-    }
-    const login = (data) => {
-        loginMutation.mutate(data, {
-            onSuccess: (loggedUser) => {
-                setTokens(loggedUser.accessToken, loggedUser.refreshToken)
-                setUser(loggedUser)
-                toast.success('Login realizado com sucesso')
-            },
-            onError: (error) => {
-                if (error.code === 'ERR_NETWORK' || error.code === 'ERR_CONNECTION_REFUSED') {
-                    toast.error('Servidor não está disponível. Verifique se o backend está rodando.')
-                } else {
-                    toast.error('Erro ao fazer login')
-                }
-            },
-        })
-    }
-    const logout = () => {
-        localStorage.removeItem(LOCAL_ACCESS_TOKEN_KEY)
-        localStorage.removeItem(LOCAL_REFRESH_TOKEN_KEY)
-        setUser(null)
-        toast.success('Logout realizado com sucesso')
-    }
+    const signup = async (data) => {
+        try {
+          const createdUser = await signupMutation.mutateAsync(data)
+          setUser(createdUser)
+          setTokens(createdUser.tokens)
+          toast.success('Conta criada com sucesso!')
+        } catch (error) {
+          toast.error(
+            'Erro ao criar a conta. Por favor, tente novamente mais tarde.'
+          )
+          console.error(error)
+        }
+      }
+      // Service Pattern/Layer
+      // criar uma camada (arquivo, objeto) que é responsável por chamar uma API
+      const login = async (data) => {
+        try {
+          const loggedUser = await loginMutation.mutateAsync(data)
+          setUser(loggedUser)
+          setTokens(loggedUser.tokens)
+          toast.success('Login realizado com sucesso!')
+        } catch (error) {
+          toast.error(
+            'Erro ao realizar o login. Por favor, verifique suas credenciais.'
+          )
+          console.error(error)
+        }
+      }
+
+   const logout = () => {
+    removeTokens()
+    setUser(null)
+    toast.success('Logout realizado com sucesso')
+  }
    return (
     <AuthContext.Provider 
     value={{ user, login, signup, isInitializing, logout }}>
