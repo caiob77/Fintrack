@@ -9,6 +9,7 @@ export default defineConfig(({ mode }) => {
   const proxyTarget = apiUrl.replace(/\/api\/?$/, '') // origem sem /api
 
   return {
+    appType: 'spa',
     plugins: [react()],
     resolve: {
       alias: {

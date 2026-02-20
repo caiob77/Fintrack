@@ -89,7 +89,7 @@ const SignupPage = () => {
                         <FormMessage />
                     </FormItem>
                 )} />
-                <FormField control={methods.control} name="confirmPassword" render={({ field }) => (
+                <FormField control={methods.control} name="passwordConfirmation" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Confirmação de Senha</FormLabel>
                         <FormControl>
