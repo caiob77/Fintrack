@@ -1,8 +1,9 @@
 'use client'
 
-import { format } from 'date-fns'
+import { addMonths, format, isValid, startOfDay, subMonths } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
 import { Calendar as CalendarIcon } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -17,34 +18,43 @@ export const DatePickerWithRange = ({
   value,
   onChange,
   className,
-  placeholder = 'Selecione uma data',
+  placeholder = 'Selecione um período',
 }) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const today = useMemo(() => startOfDay(new Date()), [])
+  const minDate = useMemo(() => startOfDay(subMonths(today, 2)), [today])
+  const maxDate = useMemo(() => startOfDay(addMonths(today, 1)), [today])
+  const selectedRange = {
+    from: isValid(value?.from) ? value.from : undefined,
+    to: isValid(value?.to) ? value.to : undefined,
+  }
+
   return (
     <div className={cn('grid gap-2', className)}>
-      <Popover>
+      <Popover open={isOpen} onOpenChange={setIsOpen}>
         <PopoverTrigger asChild>
           <Button
             id="date"
             variant={'outline'}
             className={cn(
               'w-full justify-start text-left font-normal',
-              !value && 'text-muted-foreground'
+              !selectedRange.from && 'text-muted-foreground'
             )}
           >
-            <CalendarIcon />
-            {value?.from ? (
-              value.to ? (
+            <CalendarIcon className="mr-2 h-4 w-4" />
+            {selectedRange.from ? (
+              selectedRange.to ? (
                 <>
-                  {format(value.from, 'LLL dd, y', {
+                  {format(selectedRange.from, 'PPP', {
                     locale: ptBR,
                   })}{' '}
                   -{' '}
-                  {format(value.to, 'LLL dd, y', {
+                  {format(selectedRange.to, 'PPP', {
                     locale: ptBR,
                   })}
                 </>
               ) : (
-                format(value.from, 'LLL dd, y', {
+                format(selectedRange.from, 'PPP', {
                   locale: ptBR,
                 })
               )
@@ -57,10 +67,14 @@ export const DatePickerWithRange = ({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={value?.from}
-            selected={value}
-            onSelect={onChange}
+            defaultMonth={selectedRange.from ?? today}
+            selected={selectedRange}
+            onSelect={(range) => {
+              onChange?.(range)
+              if (range?.from && range?.to) setIsOpen(false)
+            }}
             numberOfMonths={2}
+            disabled={{ before: minDate, after: maxDate }}
             locale={ptBR}
           />
         </PopoverContent>
