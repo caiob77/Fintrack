@@ -1,5 +1,4 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { Image } from '@/components/ui/image'
 import { DropdownMenu, DropdownMenuLabel, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
 import { useAuthContext } from '@/contexts/auth'
 import { useAvatarContext } from '@/contexts/avatar'
@@ -16,6 +15,10 @@ const Header = () => {
     const { user, logout } = useAuthContext()
     const { selectedAvatar, avatarOptions, selectAvatar, getAvatarUrl } = useAvatarContext()
     const [isAvatarDialogOpen, setIsAvatarDialogOpen] = useState(false)
+    const firstName = user?.firstName ?? ''
+    const lastName = user?.lastName ?? ''
+    const firstInitial = firstName.charAt(0)
+    const lastInitial = lastName.charAt(0)
     
     const handleAvatarSelect = (avatar) => {
         selectAvatar(avatar)
@@ -27,7 +30,7 @@ const Header = () => {
             <Card>
                 <CardContent className="px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <Image src="/logo.svg" alt="logo" width={100} height={100} />
+                        <img src="/logo.svg" alt="logo" width={100} height={100} />
                     </div> 
                     <div className="flex items-center gap-2">
                         <DropdownMenu>
@@ -36,10 +39,10 @@ const Header = () => {
                                     <Avatar>
                                         <AvatarImage src={getAvatarUrl()} className="h-10 w-10 rounded-full" />
                                         <AvatarFallback>
-                                            {user.firstName.charAt(0)}{user.lastName.charAt(0)}
+                                            {firstInitial}{lastInitial}
                                         </AvatarFallback>
                                     </Avatar>
-                                    {user.firstName} {user.lastName}
+                                    {firstName} {lastName}
                                     <ChevronDownIcon className="w-4 h-4" />
                                 </Button>
                             </DropdownMenuTrigger>

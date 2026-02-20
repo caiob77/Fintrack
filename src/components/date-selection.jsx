@@ -47,7 +47,7 @@ const DateSelection = () => {
     const queryParams = new URLSearchParams()
     queryParams.set('from', formatDateToQueryParam(date.from))
     queryParams.set('to', formatDateToQueryParam(date.to))
-    navigate(`/?${queryParams.toString()}`)
+    navigate(`/home?${queryParams.toString()}`)
     queryClient.invalidateQueries({
       queryKey: [
         'balance',

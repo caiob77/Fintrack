@@ -1,10 +1,11 @@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale/pt-BR'
+import { useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 
 import { useGetTransactions } from '@/api/hooks/transaction'
 import { formatCurrency } from '@/helpers/currency'
-import { getTransactionDate } from '@/helpers/date'
+import { getDefaultDateRangeString, getTransactionDate } from '@/helpers/date'
 
 import DeleteTransactionButton from './delete-transaction-button'
 import EditTransactionButton from './edit-transaction-button'
@@ -64,9 +65,10 @@ const columns = [
 ]
 
 const TransactionsTable = () => {
+  const defaultRange = useMemo(() => getDefaultDateRangeString(), [])
   const [searchParams] = useSearchParams()
-  const from = searchParams.get('from')
-  const to = searchParams.get('to')
+  const from = searchParams.get('from') ?? defaultRange.from
+  const to = searchParams.get('to') ?? defaultRange.to
   const { data: transactions } = useGetTransactions({ from, to })
   if (!transactions) return null
   return (
@@ -79,4 +81,4 @@ const TransactionsTable = () => {
   )
 }
 
-export default TransactionsTableS
+export default TransactionsTable

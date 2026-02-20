@@ -1,4 +1,5 @@
 import { PiggyBankIcon, TrendingDownIcon, TrendingUpIcon } from 'lucide-react'
+import { useMemo } from 'react'
 import { useSearchParams } from 'react-router'
 import { Pie, PieChart } from 'recharts'
 
@@ -10,6 +11,7 @@ import {
   ChartTooltipContent,
 } from '@/components/ui/chart'
 import { formatCurrency } from '@/helpers/currency'
+import { getDefaultDateRangeString } from '@/helpers/date'
 
 import TransactionTypeChartLabel from './transaction-type-chart-label'
 import TransactionTypeIcon from './transaction-type-icon'
@@ -30,9 +32,10 @@ const chartConfig = {
 }
 
 const TransactionTypeChart = () => {
+  const defaultRange = useMemo(() => getDefaultDateRangeString(), [])
   const [searchParams] = useSearchParams()
-  const from = searchParams.get('from') // YYYY-MM-DD
-  const to = searchParams.get('to') // YYYY-MM-DD
+  const from = searchParams.get('from') ?? defaultRange.from
+  const to = searchParams.get('to') ?? defaultRange.to
   const { data } = useGetUserBalance({ from, to })
   const chartData = [
     {
