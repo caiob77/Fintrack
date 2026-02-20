@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router'
+import { Navigate } from 'react-router-dom'
 
 import AddTransactionButton from '@/components/add-transaction-button'
 import Balance from '@/components/balance'
@@ -10,7 +10,9 @@ import { useAuthContext } from '@/contexts/auth'
 
 const HomePage = () => {
   const { user, isInitializing } = useAuthContext()
-  if (isInitializing) return null
+  if (isInitializing) {
+    return <div className="p-8">Carregando...</div>
+  }
   if (!user) {
     return <Navigate to="/login" />
   }
