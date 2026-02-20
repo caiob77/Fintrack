@@ -18,6 +18,32 @@ export const useAuthContext = () => {
     return useContext(AuthContext)
 } 
 
+const normalizeUser = (payload) => {
+    const source = payload?.user ?? payload
+    if (!source || typeof source !== 'object') return null
+
+    const hasUserData =
+        'email' in source ||
+        'id' in source ||
+        'firstName' in source ||
+        'first_name' in source
+
+    if (!hasUserData) return null
+
+    return {
+        ...source,
+        firstName: source.firstName ?? source.first_name ?? '',
+        lastName: source.lastName ?? source.last_name ?? '',
+    }
+}
+
+const extractTokens = (payload) => {
+    return {
+        accessToken: payload?.accessToken ?? payload?.tokens?.accessToken ?? null,
+        refreshToken: payload?.refreshToken ?? payload?.tokens?.refreshToken ?? null,
+    }
+}
+
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState(null)
     const [isInitializing, setIsInitializing] = useState(true)
@@ -39,29 +65,38 @@ export const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         const init = async () => {
             setIsInitializing(true)
-                const { accessToken, refreshToken } = getTokens()
-                if (!accessToken && !refreshToken) return;
-                try {
-                    const response = await UserService.getMe() 
-                    if (response    ) {
-                        setUser(response)
-                    }
-                } catch (error) {
-                    setUser(null)
-                    removeTokens()
-                    console.error(error)
-                }finally {
-                    setIsInitializing(false)
+            const { accessToken, refreshToken } = getTokens()
+            if (!accessToken && !refreshToken) {
+                setIsInitializing(false)
+                return
+            }
+            try {
+                const response = await UserService.getMe()
+                if (response) {
+                    setUser(normalizeUser(response))
                 }
+            } catch (error) {
+                setUser(null)
+                removeTokens()
+                console.error(error)
+            } finally {
+                setIsInitializing(false)
+            }
         }
         init()
-    }, [user]) 
+    }, []) 
 
     const signup = async (data) => {
         try {
           const createdUser = await signupMutation.mutateAsync(data)
-          setUser(createdUser)
-          setTokens(createdUser.tokens)
+          const normalizedUser = normalizeUser(createdUser)
+          const { accessToken, refreshToken } = extractTokens(createdUser)
+          if (normalizedUser) {
+            setUser(normalizedUser)
+          }
+          if (accessToken && refreshToken) {
+            setTokens(accessToken, refreshToken)
+          }
           toast.success('Conta criada com sucesso!')
         } catch (error) {
           toast.error(
@@ -75,8 +110,14 @@ export const AuthContextProvider = ({ children }) => {
       const login = async (data) => {
         try {
           const loggedUser = await loginMutation.mutateAsync(data)
-          setUser(loggedUser)
-          setTokens(loggedUser.tokens)
+          const normalizedUser = normalizeUser(loggedUser)
+          const { accessToken, refreshToken } = extractTokens(loggedUser)
+          if (normalizedUser) {
+            setUser(normalizedUser)
+          }
+          if (accessToken && refreshToken) {
+            setTokens(accessToken, refreshToken)
+          }
           toast.success('Login realizado com sucesso!')
         } catch (error) {
           toast.error(

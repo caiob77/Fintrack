@@ -15,7 +15,7 @@ export const useLoginForm = () => {
 }
 
 export const useSignupForm = () => {
-  return useForm({
+  const form = useForm({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
       firstName: '',
@@ -26,4 +26,5 @@ export const useSignupForm = () => {
       terms: false,
     },
   })
+  return { form }
 }
