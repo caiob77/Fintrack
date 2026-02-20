@@ -10,7 +10,6 @@ const baseURL = import.meta.env.VITE_API_BACKEND_URL
 const api = axios.create({
     baseURL,
 })
-
 export default api
 
 api.interceptors.request.use((request) => {
