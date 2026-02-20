@@ -1,5 +1,5 @@
 import { useQueryClient } from '@tanstack/react-query'
-import { addMonths, isValid } from 'date-fns'
+import { addMonths, isValid, startOfDay, subMonths } from 'date-fns'
 import { format } from 'date-fns'
 import { useEffect, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router'
@@ -11,27 +11,23 @@ import { DatePickerWithRange } from './ui/date-picker-with-range'
 const formatDateToQueryParam = (date) => format(date, 'yyyy-MM-dd')
 
 const getInitialDateState = (searchParams) => {
-  const defaultDate = {
-    from: new Date(),
-    to: addMonths(new Date(), 1),
-  }
+  const today = startOfDay(new Date())
+  const minFrom = startOfDay(subMonths(today, 2))
+  const maxTo = startOfDay(addMonths(today, 1))
+  const defaultDate = { from: today, to: maxTo }
+
   const from = searchParams.get('from')
   const to = searchParams.get('to')
-  if (!from || !to) {
-    return defaultDate
-  }
-  // Neste ponto, eu tenho o "from" E o "to"
-  // Eles são válidos?
-  const datesAreInvalid = !isValid(new Date(from)) || !isValid(new Date(to))
-  // Se não forem válidos, eu retorno o default
-  if (datesAreInvalid) {
-    return defaultDate
-  }
-  // Neste ponto, ambas as datas são válidas
-  return { 
-    from: new Date(from + 'T00:00:00'),
-    to: new Date(to + 'T00:00:00'),
-  }
+  if (!from || !to) return defaultDate
+
+  const parsedFrom = new Date(from + 'T00:00:00')
+  const parsedTo = new Date(to + 'T00:00:00')
+
+  if (!isValid(parsedFrom) || !isValid(parsedTo)) return defaultDate
+  if (parsedFrom > parsedTo) return defaultDate
+  if (parsedFrom < minFrom || parsedTo > maxTo) return defaultDate
+
+  return { from: parsedFrom, to: parsedTo }
 }
 
 const DateSelection = () => {
@@ -47,7 +43,7 @@ const DateSelection = () => {
     const queryParams = new URLSearchParams()
     queryParams.set('from', formatDateToQueryParam(date.from))
     queryParams.set('to', formatDateToQueryParam(date.to))
-    navigate(`/home?${queryParams.toString()}`)
+    navigate(`/home?${queryParams.toString()}`, { replace: true })
     queryClient.invalidateQueries({
       queryKey: [
         'balance',
