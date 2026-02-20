@@ -25,15 +25,15 @@ const SignupPage = () => {
         return <Navigate to="/home" />
     }
     return (
-        <div className="flex flex-col justify-center items-center h-screen w-full">
+        <div className="flex flex-col justify-center items-center min-h-screen w-full px-2 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
             <Form {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8">
-            <Card className="w-[600px] p-4">
-                <CardHeader>
-                    <CardTitle>Crie sua conta</CardTitle>
-                    <CardDescription>Insira seus dados para criar sua conta</CardDescription>
+                <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-[340px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[560px]">
+            <Card className="w-full p-2 sm:p-3 md:p-4">
+                <CardHeader className="pb-2 sm:pb-3 md:pb-4">
+                    <CardTitle className="text-lg sm:text-xl md:text-2xl">Crie sua conta</CardTitle>
+                    <CardDescription className="text-xs sm:text-sm">Insira seus dados para criar sua conta</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
+                <CardContent className="space-y-2 sm:space-y-3 md:space-y-4">
                 <FormField control={methods.control} name="firstName" render={({ field }) => (
                     <FormItem>
                         <FormLabel>Nome</FormLabel>
@@ -117,7 +117,7 @@ const SignupPage = () => {
                     </FormItem>
                 )} />
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="pt-2 sm:pt-3 md:pt-4">
                     <Button className="w-full">Criar conta</Button>
                 </CardFooter>
                 <div className="flex items-center justify-center">

@@ -19,15 +19,15 @@ const LoginPage = () => {
         return <Navigate to="/home" />
     }
     return (
-        <div className="flex flex-col justify-center items-center h-screen w-full">
+        <div className="flex flex-col justify-center items-center min-h-screen w-full px-2 py-4 sm:px-4 sm:py-6 md:px-6 md:py-8">
             <Form {...methods}>
-                <form onSubmit={methods.handleSubmit(onSubmit)} className="space-y-8">
-                    <Card className="w-[600px] p-4">
-                        <CardHeader className="text-center space-y-2 text-2xl font-bold border-border">
-                            <CardTitle className="text-2xl font-bold">Entre na sua conta</CardTitle>
-                            <CardDescription className="text-sm text-muted-foreground opacity-70">Insira seus dados para entrar na sua conta</CardDescription>
+                <form onSubmit={methods.handleSubmit(onSubmit)} className="w-full max-w-[340px] sm:max-w-[400px] md:max-w-[480px] lg:max-w-[560px]">
+                    <Card className="w-full p-2 sm:p-3 md:p-4">
+                        <CardHeader className="text-center space-y-1 pb-2 sm:pb-3 md:pb-4">
+                            <CardTitle className="text-lg font-bold sm:text-xl md:text-2xl">Entre na sua conta</CardTitle>
+                            <CardDescription className="text-xs text-muted-foreground opacity-70 sm:text-sm">Insira seus dados para entrar na sua conta</CardDescription>
                         </CardHeader>
-                        <CardContent className="space-y-5 border-b border-border pb-5"> 
+                        <CardContent className="space-y-2 border-b border-border pb-2 sm:space-y-3 sm:pb-3 md:space-y-4 md:pb-4"> 
                             <FormField control={methods.control} name="email" render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
@@ -57,7 +57,7 @@ const LoginPage = () => {
                             )} />
 
                         </CardContent>
-                        <CardFooter className="flex justify-center">
+                        <CardFooter className="flex justify-center pt-2 sm:pt-3 md:pt-4">
                             <Button type="submit" className="w-full">fazer login</Button>
                         </CardFooter>
                         <div className="flex items-center justify-center">
