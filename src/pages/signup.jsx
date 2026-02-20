@@ -38,7 +38,12 @@ const SignupPage = () => {
                     <FormItem>
                         <FormLabel>Nome</FormLabel>
                         <FormControl>
-                            <Input type="text" placeholder="digite seu nome" {...field} />
+                            <Input
+                                type="text"
+                                placeholder="digite seu nome"
+                                autoComplete="given-name"
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -47,7 +52,12 @@ const SignupPage = () => {
                     <FormItem>
                         <FormLabel>Sobrenome</FormLabel>
                         <FormControl>
-                            <Input type="text" placeholder="digite seu sobrenome" {...field} />
+                            <Input
+                                type="text"
+                                placeholder="digite seu sobrenome"
+                                autoComplete="family-name"
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -56,7 +66,12 @@ const SignupPage = () => {
                     <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                            <Input type="email" placeholder="digite seu email" {...field} />
+                            <Input
+                                type="email"
+                                placeholder="digite seu email"
+                                autoComplete="email"
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -65,7 +80,11 @@ const SignupPage = () => {
                     <FormItem>
                         <FormLabel>Senha</FormLabel>
                         <FormControl>
-                            <PasswordInput placeholder="digite sua senha" {...field} />
+                            <PasswordInput
+                                placeholder="digite sua senha"
+                                autoComplete="new-password"
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -74,7 +93,11 @@ const SignupPage = () => {
                     <FormItem>
                         <FormLabel>Confirmação de Senha</FormLabel>
                         <FormControl>
-                            <PasswordInput placeholder="digite a senha novamente" {...field} />
+                            <PasswordInput
+                                placeholder="digite a senha novamente"
+                                autoComplete="new-password"
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -82,9 +105,12 @@ const SignupPage = () => {
                 <FormField control={methods.control} name="terms" render={({ field }) => (
                     <FormItem>
                         <div className="items-top flex space-x-2 space-y-2"> 
-                            <FormControl>
-                                <Checkbox className="mt-1" id="terms" checked={field.value} onCheckedChange={field.onChange} />
-                            </FormControl>
+                            <Checkbox
+                                className="mt-1"
+                                id="terms"
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                            />
                             <Label htmlFor="terms">Li e aceito os <Link to="/terms" className="text-primary hover:text-primary/70">termos de uso</Link></Label>
                         </div>
                         <FormMessage />

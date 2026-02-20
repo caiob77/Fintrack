@@ -32,7 +32,12 @@ const LoginPage = () => {
                                 <FormItem>
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
-                                        <Input type="email" placeholder="digite seu email" {...field} />
+                                        <Input
+                                            type="email"
+                                            placeholder="digite seu email"
+                                            autoComplete="email"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -41,7 +46,11 @@ const LoginPage = () => {
                                 <FormItem>
                                     <FormLabel>Senha</FormLabel>
                                     <FormControl>
-                                        <PasswordInput placeholder="digite sua senha" {...field} />
+                                        <PasswordInput
+                                            placeholder="digite sua senha"
+                                            autoComplete="current-password"
+                                            {...field}
+                                        />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
