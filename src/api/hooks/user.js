@@ -15,7 +15,7 @@ export const useGetUserBalance = ({ from, to }) => {
   return useQuery({
     queryKey: getUserBalanceQueryKey({ userId: user.id, from, to }),
     queryFn: () => {
-      return UserService.getBalance({ userId: user.id, from, to })
+      return UserService.getBalance({ from, to })
     },
     staleTime: 1000 * 60 * 5, // 5 minutes
     enabled: Boolean(from) && Boolean(to) && Boolean(user.id),
