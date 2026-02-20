@@ -1,15 +1,24 @@
 import { Card, CardContent } from '@/components/ui/card'
-import { DropdownMenu, DropdownMenuLabel, DropdownMenuTrigger } from '@radix-ui/react-dropdown-menu'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { useAuthContext } from '@/contexts/auth'
 import { useAvatarContext } from '@/contexts/avatar'
 import { Button } from '@/components/ui/button'
-import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from '@radix-ui/react-dropdown-menu'
 import { LogOutIcon, ChevronDownIcon, UserIcon } from 'lucide-react'
 import { Avatar } from '@radix-ui/react-avatar'
 import { AvatarImage } from '@radix-ui/react-avatar'
 import { AvatarFallback } from '@radix-ui/react-avatar'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog'
+import logoUrl from '@/assets/images/logo.svg'
 
 const Header = () => {
     const { user, logout } = useAuthContext()
@@ -24,50 +33,65 @@ const Header = () => {
         selectAvatar(avatar)
         setIsAvatarDialogOpen(false)
     }
-    
+
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if ((e.metaKey || e.ctrlKey) && e.key === 'q') {
+                e.preventDefault()
+                logout()
+            }
+        }
+        window.addEventListener('keydown', handleKeyDown)
+        return () => window.removeEventListener('keydown', handleKeyDown)
+    }, [logout])
+
     return (
         <>
             <Card>
                 <CardContent className="px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <img src="@/assets/logo.svg" alt="logo" width={100} height={100} />
+                        <img src={logoUrl} alt="Logo Fintrack" width={127} height={30} className="h-8 w-auto" />
                     </div> 
                     <div className="flex items-center gap-2">
                         <DropdownMenu>
-                            <DropdownMenuTrigger asChild> 
-                                <Button variant="outline" size="icon" className="flex items-center gap-2">
-                                    <Avatar>
-                                        <AvatarImage src={getAvatarUrl()} className="h-10 w-10 rounded-full" />
-                                        <AvatarFallback>
+                            <DropdownMenuTrigger asChild>
+                                <Button
+                                    variant="outline"
+                                    size="default"
+                                    className="flex items-center gap-2 min-w-0"
+                                >
+                                    <Avatar className="h-8 w-8 shrink-0">
+                                        <AvatarImage src={getAvatarUrl()} className="h-8 w-8 rounded-full" />
+                                        <AvatarFallback className="text-xs">
                                             {firstInitial}{lastInitial}
                                         </AvatarFallback>
                                     </Avatar>
-                                    {firstName} {lastName}
-                                    <ChevronDownIcon className="w-4 h-4" />
+                                    <span className="truncate max-w-[140px]">
+                                        {firstName} {lastName}
+                                    </span>
+                                    <ChevronDownIcon className="w-4 h-4 shrink-0" />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent>
-                                <DropdownMenuLabel>
-                                    Meu perfil
-                                </DropdownMenuLabel>
+                            <DropdownMenuContent side="bottom" align="end" avoidCollisions={false} className="w-56">
+                                <DropdownMenuLabel>Meu perfil</DropdownMenuLabel>
                                 <DropdownMenuSeparator />
-                                <DropdownMenuItem>
-                                    <Button 
-                                        variant="ghost" 
-                                        size="small" 
-                                        className="w-full justify-start" 
-                                        onClick={() => setIsAvatarDialogOpen(true)}
+                                <DropdownMenuGroup>
+                                    <DropdownMenuItem
+                                        onSelect={() => setIsAvatarDialogOpen(true)}
+                                        className="cursor-pointer"
                                     >
-                                        <UserIcon className="w-4 h-4 mr-2" />
+                                        <UserIcon className="w-4 h-4" />
                                         Escolher Avatar
-                                    </Button>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                    <Button variant="ghost" size="small" className="w-full justify-start" onClick={logout}>
-                                        <LogOutIcon className="w-4 h-4 mr-2" />
+                                    </DropdownMenuItem>
+                                    <DropdownMenuItem
+                                        onSelect={logout}
+                                        className="cursor-pointer"
+                                    >
+                                        <LogOutIcon className="w-4 h-4" />
                                         Sair
-                                    </Button>
-                                </DropdownMenuItem>
+                                        <DropdownMenuShortcut>⌘+Q</DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </DropdownMenuGroup>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
