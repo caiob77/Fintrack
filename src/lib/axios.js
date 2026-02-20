@@ -1,13 +1,10 @@
 import axios from 'axios'
 import { getTokens, setTokens, removeTokens } from '@/constants/local-storage'
 
-// Em dev usa /api para o proxy do Vite (evita CORS). Em produção usa a URL do .env.
-const baseURL = import.meta.env.DEV
-  ? '/api'
-  : (import.meta.env.VITE_API_BACKEND_URL || 'https://finance-app-0y7p.onrender.com/api')
+const baseURL = import.meta.env.VITE_API_BACKEND_URL
 
 export const api = axios.create({
-  baseURL,
+  baseURL: `${baseURL}/api`,
 })
 
 export default api
