@@ -27,7 +27,7 @@ const columns = [
       return <SortableColumnHeader column={column}>Tipo</SortableColumnHeader>
     },
     cell: ({ row: { original: transaction } }) => {
-      return <TransactionTypeBadge variant={transaction.type.toLowerCase()} />
+      return <TransactionTypeBadge variant={transaction.type} />
     },
   },
   {
