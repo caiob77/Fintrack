@@ -81,10 +81,10 @@ const TransactionTypeChart = () => {
 
   return (
     <Card className="flex flex-col">
-      <CardContent className="flex flex-1 items-center gap-6 pb-0">
+      <CardContent className="flex flex-1 flex-col items-center gap-4 pb-0 sm:gap-6 lg:flex-row lg:items-center">
         <ChartContainer
           config={chartConfig}
-          className="aspect-square max-h-[250px] min-w-[250px]"
+          className="aspect-square w-full max-h-[200px] min-h-[180px] sm:max-h-[250px] sm:min-h-[220px] lg:max-h-[250px] lg:min-w-[200px]"
         >
           <PieChart>
             <ChartTooltip
@@ -138,7 +138,7 @@ const TransactionTypeChart = () => {
             </Pie>
           </PieChart>
         </ChartContainer>
-        <div className="space-y-3">
+        <div className="mb-4 space-y-3">
           {ITEMS.map((item, index) => {
             const Icon = item.icon
             return (

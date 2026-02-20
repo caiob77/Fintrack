@@ -47,7 +47,7 @@ const EditTransactionButton = ({ transaction }) => {
           <ExternalLinkIcon className="text-muted-foreground" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="min-w-[450px]">
+      <SheetContent className="w-full min-w-0 sm:min-w-[450px]">
         <SheetTitle>Editar Transação</SheetTitle>
         <Form {...form}>
           <form className="space-y-8" onSubmit={form.handleSubmit(onSubmit)}>

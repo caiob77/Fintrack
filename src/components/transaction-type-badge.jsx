@@ -22,7 +22,7 @@ const normalizeVariant = (raw) => {
 }
 
 const variants = cva(
-  'flex w-fit items-center gap-1.5 rounded-full bg-muted px-2 py-[2px] text-xs font-bold',
+  'flex w-fit items-center gap-0.5 rounded-full bg-muted px-1 py-px text-[9px] font-bold leading-tight sm:gap-1 sm:px-1.5 sm:py-px sm:text-[10px] md:text-xs',
   {
     variants: {
       variant: {
@@ -38,7 +38,7 @@ const TransactionTypeBadge = ({ variant }) => {
   const normalized = normalizeVariant(variant)
   return (
     <div className={variants({ variant: normalized })}>
-      <CircleIcon size={10} className="fill-inherit" />
+      <CircleIcon className="h-1.5 w-1.5 fill-inherit sm:h-2 sm:w-2" />
       {LABELS[normalized] ?? ''}
     </div>
   )

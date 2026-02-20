@@ -48,9 +48,9 @@ const Header = () => {
     return (
         <>
             <Card>
-                <CardContent className="px-8 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                        <img src={logoUrl} alt="Logo Fintrack" width={127} height={30} className="h-8 w-auto" />
+                <CardContent className="flex items-center justify-between px-4 py-3 sm:px-6 sm:py-4 md:px-8">
+                    <div className="flex min-w-0 items-center gap-2">
+                        <img src={logoUrl} alt="Logo Fintrack" width={127} height={30} className="h-6 w-auto sm:h-8" />
                     </div> 
                     <div className="flex items-center gap-2">
                         <DropdownMenu>
@@ -66,7 +66,7 @@ const Header = () => {
                                             {firstInitial}{lastInitial}
                                         </AvatarFallback>
                                     </Avatar>
-                                    <span className="truncate max-w-[140px]">
+                                    <span className="truncate max-w-[100px] sm:max-w-[140px]">
                                         {firstName} {lastName}
                                     </span>
                                     <ChevronDownIcon className="w-4 h-4 shrink-0" />
@@ -107,7 +107,7 @@ const Header = () => {
                             Selecione um avatar para personalizar seu perfil
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="grid grid-cols-4 gap-4 py-4">
+                    <div className="grid grid-cols-2 gap-3 py-4 sm:grid-cols-4 sm:gap-4">
                         {avatarOptions.map((avatar) => (
                             <button
                                 key={avatar.id}

@@ -15,7 +15,7 @@ import {
     TableRow,
   } from '@/components/ui/table'
   
-  export function DataTable({ columns, data }) {
+  export function DataTable({ columns, data, tableClassName }) {
     const [sorting, setSorting] = useState([])
     const table = useReactTable({
       data,
@@ -29,22 +29,23 @@ import {
     })
   
     return (
-      <Table>
+      <Table tableClassName={tableClassName}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                )
-              })}
+              {headerGroup.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className={header.column.columnDef.meta?.headerClassName}
+                >
+                  {header.isPlaceholder
+                    ? null
+                    : flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                </TableHead>
+              ))}
             </TableRow>
           ))}
         </TableHeader>
@@ -56,7 +57,10 @@ import {
                 data-state={row.getIsSelected() && 'selected'}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell
+                    key={cell.id}
+                    className={cell.column.columnDef.meta?.cellClassName}
+                  >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -65,7 +69,7 @@ import {
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
+                Nenhuma transação encontrada.
               </TableCell>
             </TableRow>
           )}

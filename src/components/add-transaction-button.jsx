@@ -45,7 +45,7 @@ const AddTransactionButton = () => {
     <>
       <Dialog open={dialogIsOpen} onOpenChange={setDialogIsOpen}>
         <DialogTrigger asChild>
-          <Button>
+          <Button className="px-2 sm:px-3 md:px-4">
             <PlusIcon />
             Nova transação
           </Button>
