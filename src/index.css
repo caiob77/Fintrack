@@ -10,6 +10,9 @@
   --color-popover-foreground: hsl(var(--popover-foreground));
   --color-primary: hsl(var(--primary));
   --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary-green: hsl(var(--primary-green));
+  --color-primary-red: hsl(var(--primary-red));
+  --color-primary-blue: hsl(var(--primary-blue));
   --color-secondary: hsl(var(--secondary));
   --color-secondary-foreground: hsl(var(--secondary-foreground));
   --color-muted: hsl(var(--muted));
