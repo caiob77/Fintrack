@@ -30,7 +30,7 @@ const Header = () => {
             <Card>
                 <CardContent className="px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                        <img src="/logo.svg" alt="logo" width={100} height={100} />
+                        <img src="@/assets/logo.svg" alt="logo" width={100} height={100} />
                     </div> 
                     <div className="flex items-center gap-2">
                         <DropdownMenu>

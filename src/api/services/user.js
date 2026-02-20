@@ -62,7 +62,7 @@ export const UserService = {
         const queryParams = new URLSearchParams()
         queryParams.set('from', variables.from)
         queryParams.set('to', variables.to)
-        const response = await api.get(`/users/me/balance?${queryParams.toString()}`)
+        const response = await api.get(`/users/${variables.userId}/balance?${queryParams.toString()}`)
         return response.data
     },
 }
