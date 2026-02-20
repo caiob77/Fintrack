@@ -1,4 +1,5 @@
 import api from '@/lib/axios'
+import { sanitizeDateRange } from '@/helpers/date-range'
 
 export const UserService = {
 
@@ -59,10 +60,11 @@ export const UserService = {
      * @returns {number} balance - Saldo do usuário
      */
     getBalance: async (variables) => {
+        const { from, to } = sanitizeDateRange(variables.from, variables.to)
         const queryParams = new URLSearchParams()
-        queryParams.set('from', variables.from)
-        queryParams.set('to', variables.to)
-        const response = await api.get(`/users/${variables.userId}/balance?${queryParams.toString()}`)
+        queryParams.set('from', from)
+        queryParams.set('to', to)
+        const response = await api.get(`/users/me/balance?${queryParams.toString()}`)
         return response.data
     },
 }
