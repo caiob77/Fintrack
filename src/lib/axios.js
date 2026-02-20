@@ -47,7 +47,8 @@ api.interceptors.request.use((request) => {
           return api(request)
         } catch (refreshError) {
           removeTokens()
-          console.error(refreshError)
+          window.dispatchEvent(new CustomEvent('auth:session-expired'))
+          return Promise.reject(error)
         }
       }
       return Promise.reject(error)

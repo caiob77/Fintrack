@@ -84,6 +84,15 @@ export const AuthContextProvider = ({ children }) => {
             }
         }
         init()
+    }, [])
+
+    useEffect(() => {
+        const handleSessionExpired = () => {
+            setUser(null)
+            toast.info('Sessão expirada. Faça login novamente.')
+        }
+        window.addEventListener('auth:session-expired', handleSessionExpired)
+        return () => window.removeEventListener('auth:session-expired', handleSessionExpired)
     }, []) 
 
     const signup = async (data) => {
